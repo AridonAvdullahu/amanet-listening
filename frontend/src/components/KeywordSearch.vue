@@ -9,7 +9,7 @@ const emit = defineEmits<{
 const input = ref("");
 const keywords = ref<string[]>([]);
 
-function addKeyword() {
+const addKeyword = () => {
   const keyword = input.value.trim();
 
   if (!keyword) return;
@@ -23,19 +23,19 @@ function addKeyword() {
   }
 
   input.value = "";
-}
+};
 
-function removeKeyword(keyword: string) {
+const removeKeyword = (keyword: string) => {
   keywords.value = keywords.value.filter((item) => item !== keyword);
-}
+};
 
-function handleSearch() {
+const handleSearch = () => {
   addKeyword();
 
   if (!keywords.value.length) return;
 
   emit("search", [...keywords.value]);
-}
+};
 </script>
 
 <template>
