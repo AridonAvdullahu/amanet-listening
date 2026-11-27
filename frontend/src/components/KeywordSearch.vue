@@ -2,6 +2,10 @@
 import { ref } from "vue";
 import { Search, X } from "@lucide/vue";
 
+defineProps<{
+  isSearching: boolean;
+}>();
+
 const emit = defineEmits<{
   search: [keywords: string[]];
 }>();
@@ -63,6 +67,7 @@ const handleSearch = () => {
             type="button"
             :aria-label="`Remove keyword ${keyword}`"
             class="shrink-0 cursor-pointer rounded-full p-0.5 hover:bg-teal-100 focus-visible:outline-2 focus-visible:outline-teal-700"
+            :disabled="isSearching"
             @click="removeKeyword(keyword)"
           >
             <X :size="14" aria-hidden="true" />
@@ -79,6 +84,7 @@ const handleSearch = () => {
           type="text"
           placeholder="Add a keyword or #hashtag"
           class="min-w-40 flex-1 bg-transparent py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400"
+          :disabled="isSearching"
           @keydown.enter.prevent="addKeyword"
         />
       </div>
@@ -86,10 +92,10 @@ const handleSearch = () => {
 
     <button
       type="submit"
-      :disabled="!keywords.length && !input.trim()"
+      :disabled="isSearching || (!keywords.length && !input.trim())"
       class="shrink-0 cursor-pointer rounded-lg bg-teal-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
     >
-      Search posts
+      {{ isSearching ? "Searching..." : "Search posts" }}
     </button>
   </form>
 </template>

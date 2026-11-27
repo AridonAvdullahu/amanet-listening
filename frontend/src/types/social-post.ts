@@ -3,6 +3,7 @@ export interface SocialPost {
   authorName: string;
   authorHandle: string;
   text: string;
+  avatarUrl?: string | null;
   source: 'bluesky';
   url: string | null;
 }

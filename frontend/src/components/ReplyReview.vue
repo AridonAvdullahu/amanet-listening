@@ -2,19 +2,14 @@
 import { ref } from "vue";
 import { Copy, ExternalLink } from "@lucide/vue";
 import type { SocialPost } from "../types/social-post";
+import UserAvatar from "./UserAvatar.vue";
 
 const props = defineProps<{
   post: SocialPost;
   suggestedReply: string;
 }>();
 
-const emit = defineEmits<{
-  save: [reply: string];
-}>();
-
 const reply = ref(props.suggestedReply);
-const isSaved = ref(false);
-
 const copyState = ref<"idle" | "copying" | "copied" | "error">("idle");
 
 const copyReply = async () => {
@@ -32,18 +27,8 @@ const copyReply = async () => {
   }
 };
 
-const saveReply = () => {
-  const text = reply.value.trim();
-
-  if (!text) return;
-
-  emit("save", text);
-  isSaved.value = true;
-};
-
 const handleReplyInput = () => {
   copyState.value = "idle";
-  isSaved.value = false;
 };
 </script>
 
@@ -70,12 +55,22 @@ const handleReplyInput = () => {
     <div class="mt-8">
       <h3 class="text-sm font-medium text-neutral-500">Original post</h3>
 
-      <article class="mt-3 rounded-lg border border-neutral-200 p-5">
-        <p class="font-semibold text-neutral-950">
-          {{ post.authorName }}
-        </p>
+      <article
+        class="mt-3 rounded-xl border border-neutral-200 bg-neutral-50/60 p-5"
+      >
+        <div class="flex items-center gap-3">
+          <UserAvatar :name="post.authorName" :src="post.avatarUrl" />
 
-        <p class="mt-1 text-sm text-neutral-500">@{{ post.authorHandle }}</p>
+          <div class="min-w-0">
+            <p class="font-semibold text-neutral-950">
+              {{ post.authorName }}
+            </p>
+
+            <p class="mt-1 truncate text-sm text-neutral-500">
+              @{{ post.authorHandle }}
+            </p>
+          </div>
+        </div>
 
         <p class="mt-4 whitespace-pre-wrap leading-relaxed text-neutral-800">
           {{ post.text }}
@@ -89,7 +84,6 @@ const handleReplyInput = () => {
           class="mt-4 inline-flex items-center gap-2 text-sm text-teal-700 underline underline-offset-4"
         >
           View original post
-
           <ExternalLink :size="15" aria-hidden="true" />
         </a>
       </article>
@@ -108,36 +102,22 @@ const handleReplyInput = () => {
         v-model="reply"
         rows="5"
         :disabled="copyState === 'copying'"
+        placeholder="Write a reply..."
         class="mt-3 block w-full resize-y rounded-lg border border-neutral-300 p-4 leading-relaxed text-neutral-900 focus:border-teal-700 focus:ring-2 focus:ring-teal-700/10 focus:outline-none"
         @input="handleReplyInput"
       ></textarea>
     </div>
 
-    <div class="mt-5 flex flex-wrap gap-3">
-      <button
-        type="button"
-        :disabled="!reply.trim() || copyState === 'copying'"
-        class="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
-        @click="copyReply"
-      >
-        <Copy :size="18" aria-hidden="true" />
+    <button
+      type="button"
+      :disabled="!reply.trim() || copyState === 'copying'"
+      class="mt-5 inline-flex cursor-pointer items-center gap-2 rounded-lg bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+      @click="copyReply"
+    >
+      <Copy :size="18" aria-hidden="true" />
 
-        {{ copyState === "copying" ? "Copying..." : "Copy reply" }}
-      </button>
-
-      <button
-        type="button"
-        :disabled="!reply.trim() || copyState === 'copying'"
-        class="inline-flex cursor-pointer items-center rounded-lg border border-neutral-300 px-5 py-3 text-sm font-semibold text-neutral-700 transition-colors hover:bg-neutral-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
-        @click="saveReply"
-      >
-        Save draft
-      </button>
-    </div>
-
-    <p v-if="isSaved" role="status" class="mt-3 text-sm text-teal-700">
-      Draft saved.
-    </p>
+      {{ copyState === "copying" ? "Copying..." : "Copy reply" }}
+    </button>
 
     <p
       v-if="copyState === 'copied'"
@@ -155,8 +135,6 @@ const handleReplyInput = () => {
       Could not copy automatically. Please select and copy the text manually.
     </p>
 
-    <p class="mt-5 text-xs text-neutral-500">
-      Sample suggestion. Nothing is sent automatically.
-    </p>
+    <p class="mt-5 text-xs text-neutral-500">Nothing is sent automatically.</p>
   </section>
 </template>

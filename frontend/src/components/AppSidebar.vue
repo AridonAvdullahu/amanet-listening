@@ -1,18 +1,5 @@
 <script setup lang="ts">
-import { Bookmark, Search } from "@lucide/vue";
-
-defineProps<{
-  activeView: "discover" | "drafts";
-}>();
-
-const emit = defineEmits<{
-  navigate: [view: "discover" | "drafts"];
-}>();
-
-const navigationItems = [
-  { id: "discover", label: "Discover", icon: Search },
-  { id: "drafts", label: "Saved drafts", icon: Bookmark },
-] as const;
+import { Search } from "@lucide/vue";
 </script>
 
 <template>
@@ -25,29 +12,16 @@ const navigationItems = [
       <span class="text-neutral-600">Listening</span>
     </div>
 
-    <nav aria-label="Main navigation" class="mt-6 flex gap-2 md:flex-col">
-      <button
-        v-for="item in navigationItems"
-        :key="item.id"
-        type="button"
-        :aria-current="activeView === item.id ? 'page' : undefined"
-        class="flex flex-1 cursor-pointer items-center gap-3 rounded-lg px-4 py-3 text-left text-base transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700 md:flex-none"
-        :class="
-          activeView === item.id
-            ? 'bg-teal-700/10 text-teal-900'
-            : 'text-neutral-600 hover:bg-neutral-200/60'
-        "
-        @click="emit('navigate', item.id)"
+    <nav aria-label="Main navigation" class="mt-6">
+      <a
+        href="/"
+        aria-current="page"
+        class="flex items-center gap-3 rounded-lg bg-teal-700/10 px-4 py-3 text-base text-teal-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-700"
       >
-        <component
-          :is="item.icon"
-          :size="21"
-          :stroke-width="1.75"
-          aria-hidden="true"
-        />
+        <Search :size="21" :stroke-width="1.75" aria-hidden="true" />
 
-        {{ item.label }}
-      </button>
+        Discover
+      </a>
     </nav>
 
     <div class="mt-auto hidden items-center gap-3 px-3 pt-8 pb-2 md:flex">

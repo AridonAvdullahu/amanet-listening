@@ -1,6 +1,9 @@
 @import "tailwindcss";
+@theme {
+    --font-sans: "Roboto Variable", ui-sans-serif, system-ui, sans-serif;
+}
 
 body {
-  margin:0;
-  font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    font-family: var(--font-sans);
 }

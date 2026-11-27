@@ -45,7 +45,7 @@ export class PostsService {
 
       const response = await agent.app.bsky.feed.searchPosts({
         q: query,
-        limit: 20,
+        limit: 20, // I have limited to 20 in order to reduce the response size and just for demonstration
         sort: 'latest',
       });
 
@@ -68,6 +68,7 @@ export class PostsService {
             authorName:
               post.author.displayName?.trim() || post.author.handle,
             authorHandle: post.author.handle,
+            avatarUrl: post.author.avatar ?? null,
             text: post.record.text,
             url: `https://bsky.app/profile/${post.author.handle}/post/${postKey}`,
           },
